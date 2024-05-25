@@ -2,10 +2,11 @@ const router = require("express").Router();
 const controller = require("./urls.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
 
-router.route("/").get(controller.list).post(controller.create);
+router.route("/:urlId").get(controller.read);
+router.route("/").get(controller.list).post(controller.create).all(methodNotAllowed);
 
 //move urlExists into an array to be exporeted!
-router.route("/:urlId").all(controller.urlExists);
+
 /*  
 POST "/urls" --> create a new short url
 

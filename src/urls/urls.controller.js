@@ -3,20 +3,21 @@ const urls = require("../data/urls-data");
 //url exsits
 function urlExists(req, res, next){
     const { urlId } = req.params;
-    const foundUrl = urls.find(url => url.id === Number(urlId));
+    const foundUrl = urls.find((url) => url.id === Number(urlId));
     if(foundUrl){
         res.locals.url = foundUrl;
         return next();
     }
     next({
         status: 405,
-        message: `Url ${urlId} does not exsist.`
+        message: `url ${urlId} does not exsist. foundUrl: ${foundUrl} urls: ${urls}`
     });
 }
 
 //req has data
-function reqHasData(req, res, next){
-    const { href } = req.body.data.href;
+function reqHasHref(req, res, next){
+    const { href } = req.body.data;
+    console.log(req.body.data.href);
     if(href){
         return next();
     }
@@ -33,17 +34,20 @@ function create(req, res, next){
     const newId = urls.length + 1;
     //create a new url object
     const newUrl = {
-        href: req.body.data.href,
-        id: newId,
+        "href": req.body.data.href,
+        "id": newId,
       }
     //push the new object
     urls.push(newUrl);
     //return the new object (the id will be automatically created because its an array right?)
-    res.status(201).json(newUrl);
+    res.status(201).json({data: newUrl});
 }
 
 
 //GET  "/urls/:urlId" --> Retrieve a short url by id
+function read(req, res, next){
+    res.json({data: res.local.url});
+}
 
 //PUT  "/urls/:urlId"  --> Update a short url by ID
 
@@ -60,7 +64,11 @@ module.exports = {
     list,
     urlExists,
     create: [
-        reqHasData,
+        reqHasHref,
         create
+    ],
+    read: [
+        urlExists,
+        read
     ]
 };
