@@ -20,10 +20,14 @@ function read(req, res){
 }
  
 //   DELETE "/uses/:useId"  --> Delete a use method by Id
+function destroy(res, req, next){
+
+}
 
 //  GET  "/uses" --> retireve a list of all use metrics
 function list(req, res){
-    res.json({data: uses});
+    const { urlId } = req.params;
+    res.json({data: uses.filter(urlId ? use => use.urlId == urlId : () => true)});
 }
 
 
@@ -32,5 +36,9 @@ module.exports = {
         useExists,
         read
     ],
-    list
+    list,
+    delete: [
+        useExists,
+        destroy
+    ]
 };
