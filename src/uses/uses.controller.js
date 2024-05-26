@@ -20,14 +20,16 @@ function read(req, res){
 }
  
 //   DELETE "/uses/:useId"  --> Delete a use method by Id
-function destroy(res, req, next){
-
+function destroy(req, res, next){
+    uses.splice(res.locals.use.id - 1, 1);
+    res.sendStatus(204);
 }
 
 //  GET  "/uses" --> retireve a list of all use metrics
 function list(req, res){
     const { urlId } = req.params;
-    res.json({data: uses.filter(urlId ? use => use.urlId == urlId : () => true)});
+    const filteredUses =  uses.filter(use => urlId ? use.urlId == Number(urlId) : true);
+    res.json({data: filteredUses});
 }
 
 
